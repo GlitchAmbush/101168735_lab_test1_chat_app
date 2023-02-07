@@ -1,60 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registration</title>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Registration</h1>
     <form id="register-form">
-        <input type="text" autocomplete="off" id="username" placeholder="Username" required/>
-        <input type="text" autocomplete="off" id="first_name" placeholder="First Name" required/>
-        <input type="text" autocomplete="off" id="last_name" placeholder="Last Name" required/>
-        <input type="password" autocomplete="off" id="password" placeholder="Password" required/>
-        <button type="submit">Submit</button>
+      <input
+        type="text"
+        autocomplete="off"
+        id="username"
+        placeholder="Username"
+        required
+      />
+      <input
+        type="text"
+        autocomplete="off"
+        id="first_name"
+        placeholder="First Name"
+        required
+      />
+      <input
+        type="text"
+        autocomplete="off"
+        id="last_name"
+        placeholder="Last Name"
+        required
+      />
+      <input
+        type="password"
+        autocomplete="off"
+        id="password"
+        placeholder="Password"
+        required
+      />
+      <button type="submit">Submit</button>
     </form>
 
     <script>
-        const date = new Date()
-        let day = date.getDate()
-        let month = date.getMonth() + 1
-        let year = date.getFullYear()
-        let hours = date.getHours()
-        let minutes = date.getMinutes()
-        let currentDate = `${month}-${day}-${year} ${hours}:${minutes}`
-        const form = document.getElementById('register-form')
-        form.addEventListener('submit', registerUser)
+      const date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let currentDate = `${month}-${day}-${year} ${hours}:${minutes}`;
+      const form = document.getElementById("register-form");
+      form.addEventListener("submit", registerUser);
 
-        // sending data as JSON
-        async function registerUser(event) {
-            event.preventDefault()
-            const username = document.getElementById('username').value
-            const firstname = document.getElementById('first_name').value
-            const lastname = document.getElementById('last_name').value
-            const password = document.getElementById('password').value
+      // sending data as JSON
+      async function registerUser(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const firstname = document.getElementById("first_name").value;
+        const lastname = document.getElementById("last_name").value;
+        const password = document.getElementById("password").value;
 
-            const result = await fetch('/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    username,
-                    firstname,
-                    lastname,
-                    password,
-                    creation: currentDate
-                })
-            }).then((res) => res.json())
+        const result = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            firstname,
+            lastname,
+            password,
+            creation: currentDate,
+          }),
+        }).then((res) => res.json());
 
-            if (result.status === 'ok') {
-                console.log(result)
-                window.open('index', '_self')
-            }
+        if (result.status === "ok") {
+          console.log(result);
+          history.back();
         }
-
+      }
     </script>
-</body>
+  </body>
 </html>
