@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="static/main.js"></script>
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <div class="chat-box">
+        <div class="message"></div>
+    </div>
+    <form id="chat-form">
+        <input type="text" id="msg" placeholder="Send Message" autocomplete="off">
+        <button type="submit">Send</button>
+    </form>
+
+
+
+
+    <script>
+        const date = new Date()
+        let day = date.getDate()
+        let month = date.getMonth() + 1
+        let year = date.getFullYear()
+        let hours = date.getHours()
+        let minutes = date.getMinutes()
+        let currentDate = `${month}-${day}-${year} ${hours}:${minutes}`
+        const chatForm = document.getElementById('chat-form');
+        const chatBox = document.querySelector('.chat-box')
+
+        const socket = io();
+
+        socket.on('message', message => {
+            console.log(message)
+            outputMessage(message)
+
+            chatBox.scrollTop = chatBox.scrollHeight
+        })
+
+
+
+        if (chatForm) {
+            chatForm.addEventListener('submit', sendMessage)
+        }
+
+        async function sendMessage(event) {
+            event.preventDefault();
+            const from_user = 'USER'
+            const to_user = 'System'
+            const message = event.target.elements.msg.value
+            const date_sent = currentDate
+            
+            socket.emit('chatMessage', message)
+
+            const result = await fetch('api/private_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from_user,
+                    to_user,
+                    message,
+                    date_sent
+                })
+            }).then((res) => res.json())
+
+            event.target.elements.msg.value = ''
+            event.target.elements.msg.focus
+        }
+
+        function outputMessage(message) {
+            const div = document.createElement('div')
+            div.classList.add('message')
+            div.innerHTML = `<p class="meta">${message.username} <span>[${message.time}]</span>:</p>
+                <p class="text">${message.text}</p>`;
+            document.querySelector('.chat-box').appendChild(div)
+        }
+    </script>
+</body>
+</html>
